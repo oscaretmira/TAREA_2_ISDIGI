@@ -1,7 +1,7 @@
 `timescale 1 ns / 1 ps
 module tb_VerificacionBasicaNivel0();
 
-parameter tamano=10;
+parameter tamano=8;
 
 reg CLOCK;
 reg [tamano-1:0] A,B;
@@ -31,7 +31,8 @@ initial begin
 	START=0;
 	#1 RESET=1;
 
-   pkt = new; 
+   pkt = new;
+	#(16*50); 
 	repeat (10) generacion_valores; 
  $stop;
 end
@@ -43,7 +44,7 @@ task generacion_valores;
 		@(negedge CLOCK);
 		pkt.randomize();
 		
-		$display("Variable A = %0d - Variable B = %0d",pkt.variable_A,pkt.variable_B);
+		$display("Variable A = %0d - Variable B = %0d",pkt.variable_A,pkt.variable_B   );
 		A = pkt.variable_A; 
 		B = pkt.variable_B; 
 		
@@ -52,10 +53,6 @@ task generacion_valores;
 		repeat (16) @(posedge CLOCK); 
 		@(negedge CLOCK); 
 		START = 1;
-		@(negedge CLOCK); 
-		START = 0; 
-		@(negedge CLOCK);
-		#(16*100);
 		
 	end
 endtask
@@ -70,11 +67,7 @@ endtask
 // .START(START)
 //);
 
-multipli_parallel #(.tamano(tamano)) DUv (.*);
-//defparam DUV.tamano = tamano; 
-
-//defparam multipli_parallel_inst.tamano = 8;
-
+multipli_parallel DUv (.*); 
 
 initial 
 	begin 
